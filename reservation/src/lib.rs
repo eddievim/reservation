@@ -1,14 +1,10 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+mod error;
 
-#[cfg(test)]
-mod tests { 
-    use super::*;
+pub use error::ReservationError;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
+pub type ReservationID = String;
+
+pub trait Rsvp {
+    fn reverse(&self, rsvp: abi::Reservation) -> Result<abi::Reservation, ReservationError>;
+    fn change_status(&self, id: ReservationID) -> Result<abi::Reservation, ReservationError>;
 }

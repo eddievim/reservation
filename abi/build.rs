@@ -5,7 +5,7 @@ fn main() {
     .unwrap();
 
 
-    // println!("cargo:rerun-if-changed=src/lib.rs");
-    // println!("cargo:rustc-env=ABI={}", std::env::var("CARGO_PKG_VERSION").unwrap());        
+    println!("cargo:rerun-if-changed=src/lib.rs");
+    println!("cargo:rustc-env=ABI={}", std::env::var("CARGO_PKG_VERSION").unwrap());        
 }
  
