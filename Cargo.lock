@@ -1177,6 +1177,7 @@ name = "reservation"
 version = "0.1.0"
 dependencies = [
  "abi",
+ "async-trait",
  "sqlx",
  "thiserror",
 ]
@@ -1460,6 +1461,7 @@ dependencies = [
  "sha2",
  "sqlx-core",
  "sqlx-mysql",
+ "sqlx-postgres",
  "sqlx-sqlite",
  "syn 1.0.109",
  "tempfile",
