@@ -8,5 +8,6 @@ edition = "2021"
 [dependencies]
 abi = { version = "0.1.0", path = "../abi" }
 async-trait = "0.1.73"
+chrono = "0.4.31"
 sqlx = {version = "0.7.1", features = ["postgres"]}
 thiserror = "1.0.48"

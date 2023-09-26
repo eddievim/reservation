@@ -1,14 +1,15 @@
 mod error;
+mod manager;
 
 use async_trait::async_trait;
 pub use error::ReservationError;
-use sqlx::{postgres::Postgres, Pool};
+use sqlx::{postgres::Postgres, Pool, PgPool};
 
 pub type ReservationID = String;
 
 #[derive(Debug)]
 pub struct ReservationManager {
-    pool: Pool::<Postgres>,
+    pool: PgPool,
 }
 
 #[async_trait]

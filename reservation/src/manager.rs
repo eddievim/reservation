@@ -1,12 +1,42 @@
+use std::time::SystemTime;
 
-use crate::abi;
+use async_trait::async_trait;
+use sqlx::{postgres::types::PgRange, Row};
+use chrono::{Utc, DateTime};
+
+use crate::{Rsvp, ReservationManager, ReservationID, ReservationError};
 
 #[async_trait]
 impl Rsvp for ReservationManager {
-    async fn reverse(&self, rsvp: abi::Reservation) -> Result<abi::Reservation, ReservationError> {
-        let sql = "INSERT INTO reservation (id, name, email, status, note) VALUES ($1, $2, $3, $4, $5) RETURNING ID";
-        sqlx::Query::execute(sql,
-         rsvp.id, rsvp.name, rsvp.email, rsvp.status, rsvp.note).await?;
+    async fn reverse(&self, mut rsvp: abi::Reservation) -> Result<abi::Reservation, ReservationError> {
+        if rsvp.start.is_none() || rsvp.end.is_none() {
+            return Err(ReservationError::InvalidTime);
+        }
+        let start = rsvp.start.unwrap();
+        let start = DateTime::<Utc>::from_timestamp(
+            start.seconds,
+            start.nanos as u32).unwrap();
+        let end = rsvp.end.unwrap();
+        let end = DateTime::<Utc>::from_timestamp(
+            end.seconds,
+            end.nanos as u32).unwrap();
+        let timespan: PgRange<DateTime<Utc>> = (start..end).into();
+        let status: abi::ReservationStatus = abi::ReservationStatus::try_from(rsvp.status)
+        .unwrap_or(abi::ReservationStatus::Pending);
+    
+         let id = sqlx::query("INSERT INTO reservation(user_id, resource_id, timespan, note, status)
+         VALUES ($1, $2, $3, $4, $5) RETURNING ID")
+         .bind(rsvp.user_id)
+         .bind(rsvp.resource_id)
+         .bind(timespan)
+         .bind(rsvp.note)
+         .bind(status)
+         .fetch_one(&self.pool)
+         .await?.get(0);
+
+        rsvp.id = id;
+    
+        Ok(rsvp)
     }
 
     async fn change_status(&self, id: ReservationID) -> Result<abi::Reservation, ReservationError> {

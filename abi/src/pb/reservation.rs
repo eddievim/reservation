@@ -110,6 +110,7 @@ pub struct ListenResponse {
     #[prost(message, optional, tag = "2")]
     pub reservation: ::core::option::Option<Reservation>,
 }
+#[derive(sqlx::Type)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum ReservationStatus {

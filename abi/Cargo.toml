@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 prost = "0.12.1"
 prost-types= "0.12.1"
+sqlx = "0.7.1"
 tonic = "0.10.0"
 
 [build-dependencies]
